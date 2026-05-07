@@ -1,0 +1,54 @@
+{
+  "success": true,
+  "data": [
+    {
+      "task_id": "text_generation",
+      "task_name": "Text Generation",
+      "recommended_models": [
+        "gpt-3.5-turbo",
+        "claude-3-opus"
+      ],
+      "reason": "Best balance of cost and performance for general text generation",
+      "budget_tier": "mid"
+    },
+    {
+      "task_id": "code_generation",
+      "task_name": "Code Generation",
+      "recommended_models": [
+        "gpt-4",
+        "claude-3-sonnet"
+      ],
+      "reason": "Superior code understanding and generation capabilities",
+      "budget_tier": "premium"
+    },
+    {
+      "task_id": "embeddings",
+      "task_name": "Text Embeddings",
+      "recommended_models": [
+        "text-embedding-3-small"
+      ],
+      "reason": "Specialized embeddings with low cost",
+      "budget_tier": "free"
+    },
+    {
+      "task_id": "summarization",
+      "task_name": "Text Summarization",
+      "recommended_models": [
+        "gpt-3.5-turbo",
+        "mistral-medium"
+      ],
+      "reason": "Effective summarization at lower cost",
+      "budget_tier": "low-cost"
+    },
+    {
+      "task_id": "image_generation",
+      "task_name": "Image Generation",
+      "recommended_models": [
+        "dall-e-3"
+      ],
+      "reason": "State-of-the-art image generation",
+      "budget_tier": "premium"
+    }
+  ],
+  "timestamp": 1778189425
+}
