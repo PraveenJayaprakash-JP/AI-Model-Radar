@@ -3,6 +3,7 @@ import { FlashList } from "@shopify/flash-list";
 import ModelCard from "./ModelCard";
 import ErrorBanner from "./ErrorBanner";
 import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
 
 import type { Model } from "../types/models";
 
@@ -11,13 +12,21 @@ interface ModelListProps {
   isLoading?: boolean;
   error?: string;
   highlight?: boolean;
-  dataUpdatedAt?: number;
 }
 
-export default function ModelList({ models, isLoading, error, highlight, dataUpdatedAt }: ModelListProps) {
+export default function ModelList({ models, isLoading, error, highlight }: ModelListProps) {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = React.useState(false);
-  const isStale = dataUpdatedAt && (Date.now() - dataUpdatedAt) > 15 * 60 * 1000;
+  const lastValidTime = React.useRef<number>(Date.now());
+
+  // Update the last valid time when data is successfully loaded
+  React.useEffect(() => {
+    if (!isLoading && !error && models.length > 0) {
+      lastValidTime.current = Date.now();
+    }
+  }, [isLoading, error, models]);
+
+  const isStale = (Date.now() - lastValidTime.current) > 15 * 60 * 1000;
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -28,9 +37,11 @@ export default function ModelList({ models, isLoading, error, highlight, dataUpd
   if (isLoading && models.length === 0) {
     return <ActivityIndicator animating={true} />;
   }
-  if (error) {
+
+  if (error && models.length === 0) {
     return <ErrorBanner message={error} onRetry={onRefresh} />;
   }
+
   return (
     <>
       {isStale && (
@@ -46,6 +57,11 @@ export default function ModelList({ models, isLoading, error, highlight, dataUpd
         estimatedItemSize={120}
         keyExtractor={(item) => item.name}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        ListEmptyComponent={
+          <Text style={{ padding: 16, textAlign: "center" }}>
+            No models found
+          </Text>
+        }
       />
     </>
   );

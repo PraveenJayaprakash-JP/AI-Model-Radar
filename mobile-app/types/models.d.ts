@@ -5,17 +5,18 @@ export interface Provider {
 
 export interface Model {
   name: string;
-  provider: Provider;
+  provider: string; // Changed from Provider object to string to match scraped data
   launch_date?: number;
   capabilities: string[];
-  pricing: {
-    input_cost_per_1k: number;
-    output_cost_per_1k: number;
+  pricing?: {
+    input_cost_per_1k?: number;
+    output_cost_per_1k?: number;
   };
   free_tier?: {
     requests_per_day?: number;
     tokens_per_month?: number;
   };
+  context_window?: number;
 }
 
 export type ModelsResponse = {

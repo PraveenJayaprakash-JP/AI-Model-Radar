@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2025-05-07)
 
 **Core value:** Developers quickly find the best free or low-cost AI model for their specific task
-**Current focus:** Phase 1 — Foundation & Data Pipeline
+**Current focus:** Phase 2 — Core Mobile App
 
 ## Phase State
 
@@ -19,7 +19,7 @@ See: .planning/PROJECT.md (updated 2025-05-07)
 
 ## Recent Activity
 
-*None yet — project initialized 2025-05-07*
+- Phase 1 completed: Data pipeline with GitHub Actions scraper, 6 providers, 31 tests passing
 
 ## Upcoming Milestones
 
