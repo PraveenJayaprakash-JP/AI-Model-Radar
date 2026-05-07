@@ -1,0 +1,1 @@
+[{"name":"gpt-4","provider":"openai","launch_date":1686935002,"capabilities":["text"],"pricing":{"input_cost_per_1k":0.03,"output_cost_per_1k":0.06},"free_tier":true},{"name":"claude-3","provider":"anthropic","launch_date":1712524800,"capabilities":["text","multimodal"],"pricing":{"input_cost_per_1k":0.02,"output_cost_per_1k":0.08},"free_tier":false}]
