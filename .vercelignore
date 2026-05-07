@@ -1,6 +1,3 @@
-scraper/
-tests/
-.pytest_cache/
-__pycache__/
-*.pyc
-requirements.txt
+# Exclude everything except index.html
+*
+!index.html

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Model Radar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              200: '#ddd6fe',
+              300: '#c4b5fd',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              800: '#5b21b6',
+              900: '#4c1d95',
+            },
+            surface: {
+              light: '#ffffff',
+              dark: '#0f172a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --color-bg: #ffffff;
+      --color-surface: #f8fafc;
+      --color-text: #0f172a;
+      --color-text-muted: #64748b;
+      --color-border: #e2e8f0;
+      --color-primary: #8b5cf6;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg: #0f172a;
+        --color-surface: #1e293b;
+        --color-text: #f8fafc;
+        --color-text-muted: #94a3b8;
+        --color-border: #334155;
+        --color-primary: #a78bfa;
+      }
+    }
+    
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+    }
+    
+    .card {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+    }
+    
+    /* Smooth animations */
+    * {
+      transition-property: background-color, border-color, color, fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--color-surface);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-text-muted);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/80 backdrop-blur-md">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-600 text-white font-bold text-lg">
+            AI
+          </div>
+          <h1 class="text-xl font-bold tracking-tight">Model Radar</h1>
+        </div>
+        
+        <!-- Search -->
+        <div class="hidden sm:block flex-1 max-w-md mx-8">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="search" 
+              placeholder="Search models..."
+              class="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 pl-10 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+            >
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="flex items-center gap-2">
+          <button id="refreshBtn" class="p-2 rounded-lg hover:bg-[var(--color-surface)] text-[var(--color-text-muted)]" title="Refresh data">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Offline Banner -->
+  <div id="offlineBanner" class="hidden fixed top-16 left-0 right-0 z-40 bg-red-600 text-white px-4 py-2 text-center text-sm font-medium">
+    You're offline. Showing cached data.
+  </div>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Recommendations Section -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Best Models for Your Task</h2>
+      <div id="recommendations" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Dynamic recommendations injected here -->
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="mb-8">
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-[var(--color-text-muted)]">Providers:</span>
+          <div id="providerFilters" class="flex flex-wrap gap-2">
+            <!-- Dynamic provider chips -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Models Grid -->
+    <section>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">All Models</h2>
+        <div class="text-sm text-[var(--color-text-muted)]">
+          <span id="modelCount">0</span> models
+        </div>
+      </div>
+      
+      <div id="modelsGrid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Dynamic model cards injected here -->
+      </div>
+      
+      <!-- Loading State -->
+      <div id="loadingState" class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+      
+      <!-- Error State -->
+      <div id="errorState" class="hidden text-center py-12">
+        <div class="inline-flex items-center gap-2 text-red-600">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <span>Failed to load models</span>
+        </div>
+        <button id="retryBtn" class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+          Retry
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-[var(--color-border)] mt-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+      <div class="flex items-center justify-between text-sm text-[var(--color-text-muted)]">
+        <span>Data refreshes every 15 minutes</span>
+        <span id="lastUpdated">Last updated: --</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ============ Configuration ============
+    const DATA_URL = "https://raw.githubusercontent.com/PraveenJayaprakash-JP/AI-Model-Radar/main/data/models.json";
+    const CACHE_KEY = "aiModelRadar_cache";
+    const TIMESTAMP_KEY = "aiModelRadar_timestamp";
+    const STALE_THRESHOLD = 15 * 60 * 1000; // 15 minutes
+
+    // ============ State ============
+    let allModels = [];
+    let selectedProviders = new Set();
+
+    // ============ Initialization ============
+    document.addEventListener("DOMContentLoaded", async () => {
+      initOfflineDetection();
+      initSearch();
+      initRefresh();
+      await loadModels();
+    });
+
+    // ============ Offline Detection ============
+    function initOfflineDetection() {
+      window.addEventListener("online", () => {
+        document.getElementById("offlineBanner").classList.add("hidden");
+      });
+      window.addEventListener("offline", () => {
+        document.getElementById("offlineBanner").classList.remove("hidden");
+      });
+      if (!navigator.onLine) {
+        document.getElementById("offlineBanner").classList.remove("hidden");
+      }
+    }
+
+    // ============ Search ============
+    function initSearch() {
+      let debounceTimer;
+      const searchInput = document.getElementById("search");
+      
+      searchInput.addEventListener("input", (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          filterAndRenderModels(e.target.value);
+        }, 200);
+      });
+    }
+
+    // ============ Refresh ============
+    function initRefresh() {
+      document.getElementById("refreshBtn").addEventListener("click", loadModels);
+      document.getElementById("retryBtn").addEventListener("click", loadModels);
+    }
+
+    // ============ Data Loading ============
+    async function loadModels() {
+      showLoading(true);
+      showError(false);
+      
+      try {
+        const response = await fetch(DATA_URL);
+        if (!response.ok) throw new Error("Failed to fetch");
+        const data = await response.json();
+        
+        allModels = Array.isArray(data) ? data : (data.data || []);
+        cacheData(allModels);
+        renderAll();
+      } catch (error) {
+        console.error("Fetch error:", error);
+        const cached = loadCachedData();
+        if (cached) {
+          allModels = cached;
+          renderAll();
+        } else {
+          showError(true);
+        }
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // ============ Caching ============
+    function cacheData(models) {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(models));
+      localStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
+      updateLastUpdated();
+    }
+
+    function loadCachedData() {
+      const cached = localStorage.getItem(CACHE_KEY);
+      return cached ? JSON.parse(cached) : null;
+    }
+
+    function isStale() {
+      const timestamp = localStorage.getItem(TIMESTAMP_KEY);
+      return timestamp && (Date.now() - parseInt(timestamp)) > STALE_THRESHOLD;
+    }
+
+    function updateLastUpdated() {
+      const timestamp = localStorage.getItem(TIMESTAMP_KEY);
+      if (timestamp) {
+        const date = new Date(parseInt(timestamp));
+        document.getElementById("lastUpdated").textContent = 
+          `Last updated: ${date.toLocaleTimeString()}`;
+      }
+    }
+
+    // ============ Rendering ============
+    function renderAll() {
+      renderProviderFilters();
+      filterAndRenderModels(document.getElementById("search").value);
+      renderRecommendations();
+    }
+
+    function renderProviderFilters() {
+      const providers = [...new Set(allModels.map(m => m.provider).filter(Boolean))];
+      const container = document.getElementById("providerFilters");
+      
+      container.innerHTML = providers.map(provider => `
+        <button 
+          data-provider="${provider}"
+          class="px-3 py-1.5 rounded-full text-sm font-medium transition-all
+            ${selectedProviders.has(provider) 
+              ? 'bg-primary-600 text-white' 
+              : 'bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-border)]'}"
+        >
+          ${provider}
+        </button>
+      `).join("");
+      
+      container.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const provider = btn.dataset.provider;
+          if (selectedProviders.has(provider)) {
+            selectedProviders.delete(provider);
+          } else {
+            selectedProviders.add(provider);
+          }
+          filterAndRenderModels(document.getElementById("search").value);
+          renderProviderFilters(); // Re-render to update active state
+        });
+      });
+    }
+
+    function filterAndRenderModels(searchQuery) {
+      let filtered = allModels;
+      
+      // Filter by search
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(m => 
+          m.name?.toLowerCase().includes(query) || 
+          m.provider?.toLowerCase().includes(query)
+        );
+      }
+      
+      // Filter by providers
+      if (selectedProviders.size > 0) {
+        filtered = filtered.filter(m => selectedProviders.has(m.provider));
+      }
+      
+      // Sort by launch date (newest first)
+      filtered.sort((a, b) => (b.launch_date || 0) - (a.launch_date || 0));
+      
+      // Render
+      const container = document.getElementById("modelsGrid");
+      document.getElementById("modelCount").textContent = filtered.length;
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12 text-[var(--color-text-muted)]">
+            No models found
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = filtered.map(model => renderModelCard(model)).join("");
+    }
+
+    function renderModelCard(model) {
+      const pricing = model.pricing || {};
+      const isFree = model.free_tier;
+      
+      return `
+        <article class="card rounded-xl p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h3 class="font-semibold text-lg">${model.name || 'Unknown'}</h3>
+              <span class="text-sm text-[var(--color-text-muted)]">${model.provider || 'Unknown'}</span>
+            </div>
+            ${isFree ? '<span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">FREE</span>' : ''}
+          </div>
+          
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between">
+              <span class="text-[var(--color-text-muted)]">Input</span>
+              <span class="font-medium">$${pricing.input_cost_per_1k || '--'}/1K</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[var(--color-text-muted)]">Output</span>
+              <span class="font-medium">$${pricing.output_cost_per_1k || '--'}/1K</span>
+            </div>
+          </div>
+          
+          ${model.capabilities?.length ? `
+            <div class="mt-4 flex flex-wrap gap-1">
+              ${model.capabilities.map(cap => `
+                <span class="px-2 py-0.5 bg-[var(--color-surface)] text-xs text-[var(--color-text-muted)] rounded">
+                  ${cap}
+                </span>
+              `).join('')}
+            </div>
+          ` : ''}
+        </article>
+      `;
+    }
+
+    function renderRecommendations() {
+      const container = document.getElementById("recommendations");
+      const freeModels = allModels.filter(m => m.free_tier).slice(0, 3);
+      
+      if (freeModels.length === 0) {
+        container.innerHTML = '<p class="text-[var(--color-text-muted)]">No recommendations available</p>';
+        return;
+      }
+      
+      const tasks = [
+        { name: "Text Generation", capability: "text" },
+        { name: "Code Generation", capability: "code" },
+        { name: "Vision/Images", capability: "vision" }
+      ];
+      
+      container.innerHTML = tasks.map(task => {
+        const bestModel = allModels.find(m => 
+          m.free_tier && m.capabilities?.some(c => c.toLowerCase().includes(task.capability))
+        ) || freeModels[0];
+        
+        return `
+          <div class="card rounded-xl p-6 border-primary-200 dark:border-primary-800">
+            <div class="text-sm text-[var(--color-text-muted)] mb-2">Best for ${task.name}</div>
+            <div class="font-semibold text-lg mb-1">${bestModel?.name || 'N/A'}</div>
+            <div class="text-sm text-green-600 font-medium">✓ Free available</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ============ UI Helpers ============
+    function showLoading(show) {
+      document.getElementById("loadingState").classList.toggle("hidden", !show);
+      document.getElementById("modelsGrid").classList.toggle("hidden", show);
+    }
+
+    function showError(show) {
+      document.getElementById("errorState").classList.toggle("hidden", !show);
+      document.getElementById("modelsGrid").classList.toggle("hidden", show);
+    }
+  </script>
+</body>
+</html>
