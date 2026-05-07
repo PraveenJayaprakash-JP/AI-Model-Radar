@@ -10,3 +10,7 @@ export const loadCachedModels = () => {
 export const saveModels = (models: any[]) => {
   storage.set("models", JSON.stringify(models));
 };
+
+export const clearStorage = () => {
+  storage.clearAll();
+};
