@@ -1,7 +1,8 @@
-import { ActivityIndicator, Text, Banner } from "react-native-paper";
+import { ActivityIndicator, Text, Banner, RefreshControl } from "react-native-paper";
 import { FlashList } from "@shopify/flash-list";
 import ModelCard from "./ModelCard";
 import ErrorBanner from "./ErrorBanner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ModelListProps {
   models: any[];
@@ -12,19 +13,27 @@ interface ModelListProps {
 }
 
 export default function ModelList({ models, isLoading, error, highlight, dataUpdatedAt }: ModelListProps) {
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = React.useState(false);
   const isStale = dataUpdatedAt && (Date.now() - dataUpdatedAt) > 15 * 60 * 1000;
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: ["models"] });
+    setRefreshing(false);
+  };
 
   if (isLoading && models.length === 0) {
     return <ActivityIndicator animating={true} />;
   }
   if (error) {
-    return <ErrorBanner message={error} />;
+    return <ErrorBanner message={error} onRetry={onRefresh} />;
   }
   return (
     <>
       {isStale && (
         <Banner visible={true} actions={[
-          { label: "Refresh" }
+          { label: "Refresh", onPress: onRefresh }
         ]}>
           Data may be out of date. Pull to refresh.
         </Banner>
@@ -34,6 +43,7 @@ export default function ModelList({ models, isLoading, error, highlight, dataUpd
         renderItem={({ item }) => <ModelCard model={item} highlight={highlight} />}
         estimatedItemSize={120}
         keyExtractor={(item) => item.name}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     </>
   );
