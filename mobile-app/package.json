@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@react-navigation/stack": "^7.8.12",
-    "@shopify/flash-list": "^2.3.1",
+    "@shopify/flash-list": "2.0.2",
     "@tanstack/react-query": "^5.100.9",
     "expo": "~54.0.33",
     "expo-status-bar": "~3.0.9",
