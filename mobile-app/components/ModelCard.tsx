@@ -1,11 +1,9 @@
 import { Card, Text } from "react-native-paper";
 
+import type { Model } from "../types/models";
+
 interface ModelCardProps {
-  model: {
-    name: string;
-    provider: string;
-    launch_date?: number;
-  };
+  model: Model;
   highlight?: boolean;
 }
 

@@ -3,10 +3,12 @@ import { loadCachedModels, saveModels } from "../lib/storage";
 
 export const MODELS_QUERY_KEY = ["models"];
 
-export const fetchModels = async () => {
+import type { ModelsResponse } from "../types/models";
+
+export const fetchModels = async (): Promise<ModelsResponse> => {
   const response = await fetch("https://raw.githubusercontent.com/PraveenJayaprakash-JP/AI-Model-Radar/main/data/models.json");
   if (!response.ok) throw new Error("Failed to fetch models");
-  return response.json();
+  return response.json() as Promise<ModelsResponse>;
 };
 
 export const modelsQueryOptions = queryOptions({

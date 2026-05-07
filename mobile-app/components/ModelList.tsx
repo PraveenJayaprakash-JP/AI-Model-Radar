@@ -4,8 +4,10 @@ import ModelCard from "./ModelCard";
 import ErrorBanner from "./ErrorBanner";
 import { useQueryClient } from "@tanstack/react-query";
 
+import type { Model } from "../types/models";
+
 interface ModelListProps {
-  models: any[];
+  models: Model[];
   isLoading?: boolean;
   error?: string;
   highlight?: boolean;
