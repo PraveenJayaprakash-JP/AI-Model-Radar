@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import "../lib/sentry";
 
 const Tab = createBottomTabNavigator();
 
