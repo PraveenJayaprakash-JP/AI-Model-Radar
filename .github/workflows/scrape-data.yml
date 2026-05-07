@@ -1,0 +1,53 @@
+name: Scrape AI Model Data
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.10"
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        provider: ["openai", "anthropic", "mistral", "google", "replicate", "together"]
+      fail-fast: false
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Scrape provider
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          REPLICATE_API_KEY: ${{ secrets.REPLICATE_API_KEY }}
+          TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY }}
+        run: |
+          python -m scraper.main
+      
+      - name: Validate JSON
+        run: |
+          python -c "import json; json.load(open('data/models.json'))" && echo "models.json is valid"
+          python -c "import json; json.load(open('data/tasks.json'))" && echo "tasks.json is valid"
+      
+      - name: Commit and push (if changes)
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add data/models.json data/tasks.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update models.json and tasks.json" && git push)
