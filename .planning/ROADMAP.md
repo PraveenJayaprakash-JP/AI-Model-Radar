@@ -15,12 +15,12 @@
 **Estimated Duration:** 5-7 days
 
 ### Requirements (6 total)
-- [ ] **DATA-01**: Scraper runs every 15 minutes via GitHub Actions
-- [ ] **DATA-02**: Fetch from provider APIs (OpenAI, Anthropic)  
-- [ ] **DATA-03**: Scrape providers without APIs (Mistral, Google)
-- [ ] **DATA-04**: Validate pricing data structure
-- [ ] **DATA-05**: Publish models.json to repository
-- [ ] **DATA-06**: Publish tasks.json with recommendations
+- [x] **DATA-01**: Scraper runs every 15 minutes via GitHub Actions
+- [x] **DATA-02**: Fetch from provider APIs (OpenAI, Anthropic)  
+- [x] **DATA-03**: Scrape providers without APIs (Mistral, Google)
+- [x] **DATA-04**: Validate pricing data structure
+- [x] **DATA-05**: Publish models.json to repository
+- [x] **DATA-06**: Publish tasks.json with recommendations
 
 ### Success Criteria
 1. GitHub Actions workflow runs successfully (cron triggers observed)
