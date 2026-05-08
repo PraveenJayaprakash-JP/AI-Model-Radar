@@ -18,6 +18,7 @@
     "expo-sharing": "~14.0.8",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
+    "react-error-boundary": "^6.1.1",
     "react-native": "0.81.5",
     "react-native-mmkv": "^4.3.1",
     "react-native-paper": "^5.15.1",
