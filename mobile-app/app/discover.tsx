@@ -1,4 +1,4 @@
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import ModelList from "../components/ModelList";
 import { useQuery } from "@tanstack/react-query";
 import { modelsQueryOptions } from "../queries/models";
@@ -32,6 +32,16 @@ export default function DiscoverScreen() {
   );
 
   const freeModels: Model[] = (data || []).filter((model) => model.free_tier);
+
+  // Loading state: Show ActivityIndicator on initial load
+  if (isLoading && newModels.length === 0 && freeModels.length === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: currentTheme.background }}>
+        <ActivityIndicator animating={true} size="large" />
+        <Text style={{ marginTop: 16, color: currentTheme.textSecondary, fontSize: 16 }}>Discovering models...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: currentTheme.background }}>

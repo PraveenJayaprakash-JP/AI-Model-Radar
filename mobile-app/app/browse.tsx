@@ -1,4 +1,4 @@
-import { TextInput, View, TouchableOpacity } from "react-native";
+import { TextInput, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { modelsQueryOptions } from "../queries/models";
 import ModelList from "../components/ModelList";
@@ -6,7 +6,7 @@ import { useFilters, SortOption } from "../stores/useFilters";
 import { loadCachedModels, saveModels } from "../lib/storage";
 import { useEffect, useState } from "react";
 import type { Model } from "../types/models";
-import { Text } from "react-native";
+import { Text, Banner } from "react-native";
 import { getTheme } from "../lib/theme";
 import { Ionicons } from "@expo/vector-icons";
 import FilterModal from "../components/FilterModal";
@@ -86,6 +86,16 @@ export default function BrowseScreen() {
 
   const activeFilterCount = providers.length + capabilities.length + (showFreeOnly ? 1 : 0) + (maxPrice < 1 ? 1 : 0);
 
+  // Loading state: Show large ActivityIndicator on initial load
+  if (isLoading && (data || []).length === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: currentTheme.background }}>
+        <ActivityIndicator animating={true} size="large" />
+        <Text style={{ marginTop: 16, color: currentTheme.textSecondary, fontSize: 16 }}>Loading AI models...</Text>
+      </View>
+    );
+  }
+
   const getSortLabel = () => {
     switch (sortBy) {
       case "name": return "A → Z";
@@ -99,7 +109,17 @@ export default function BrowseScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: currentTheme.background }}>
-      <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
+        {/* Background refresh banner */}
+        {isFetching && data && data.length > 0 && (
+          <Banner
+            visible={true}
+            icon={() => <ActivityIndicator size="small" color="#007AFF" />}
+            actions={[{ label: 'Hide', onPress: () => {} }]}
+          >
+            Updating models...
+          </Banner>
+        )}
+        <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
         <View style={{ 
           flexDirection: "row", 
           alignItems: "center",

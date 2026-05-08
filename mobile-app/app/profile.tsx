@@ -4,6 +4,9 @@ import { useFilters } from "../stores/useFilters";
 import { clearStorage } from "../lib/storage";
 import { getTheme } from "../lib/theme";
 
+// Note: Profile screen uses local data only (Zustand store + MMKV storage), no async fetches required
+// Settings (dark mode) are persisted in MMKV, so no loading indicator needed
+
 export default function ProfileScreen() {
   const { isDarkMode, toggleTheme } = useFilters();
   const currentTheme = getTheme(isDarkMode);
