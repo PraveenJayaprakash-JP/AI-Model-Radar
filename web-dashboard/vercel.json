@@ -9,18 +9,31 @@
   ],
   "routes": [
     {
-      "src": "/",
-      "dest": "/ai-model-radar.html"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/ai-model-radar.html"
+      "dest": "/ai-model-radar.html",
+      "status": 200
     }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate"
@@ -30,6 +43,19 @@
           "value": "*"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "statusCode": 301
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/data/(.*)",
+      "destination": "https://raw.githubusercontent.com/PraveenJayaprakash-JP/AI-Model-Radar/main/data/$1"
     }
   ]
 }

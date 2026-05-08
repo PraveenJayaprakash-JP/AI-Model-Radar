@@ -1,3 +1,37 @@
-# Exclude everything except index.html
-*
-!index.html
+# Git and repository files
+.git
+.gitignore
+.planning
+
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Development files
+.DS_Store
+Thumbs.db
+*.log
+
+# Mobile app (not deployed to Vercel)
+mobile-app/
+
+# Scraper (not deployed to Vercel)
+scraper/
+
+# Test files
+tests/
+*.test.*
+__tests__/
+
+# Documentation (can be deployed but optional)
+README.md
+*.md
+
+# Planning and config files
+.vercel/
+.vercelignore
+*.md
