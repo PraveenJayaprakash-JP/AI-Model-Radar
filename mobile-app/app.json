@@ -1,33 +1,87 @@
 {
   "expo": {
-    "name": "mobile-app",
-    "slug": "mobile-app",
+    "name": "AI Model Radar",
+    "slug": "ai-model-radar",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0A84FF"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.ai-model-radar",
+      "buildNumber": "1",
+      "appStoreUrl": "https://apps.apple.com/app/ai-model-radar",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app does not access camera"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0A84FF"
       },
+      "package": "com.yourcompany.ai-model-radar",
+      "versionCode": 1,
+      "permissions": [],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static"
     },
     "plugins": [
-      "expo-router"
-    ]
-  }
+      "expo-router",
+      "expo-splash-screen",
+      [
+        "expo-updates",
+        {
+          "url": "https://u.expo.dev/YOUR_PROJECT_ID"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "YOUR_PROJECT_ID"
+      }
+    }
+  },
+  "description": "AI Model Radar helps developers quickly find the best free or low-cost AI models for their specific tasks. Track pricing from OpenAI, Anthropic, Google, Mistral, Replicate, and Together.ai in one place. Save hours of research with real-time model comparisons, free tier insights, and cost-per-token calculations. Perfect for startups, indie developers, and anyone building AI-powered applications.",
+  "shortDescription": "Find the best free AI models and compare pricing in seconds.",
+  "categories": [
+    "Developer Tools",
+    "Productivity",
+    "Reference"
+  ],
+  "keywords": [
+    "AI",
+    "machine learning",
+    "OpenAI",
+    "ChatGPT",
+    "Claude",
+    "GPT-4",
+    "pricing",
+    "API costs",
+    "developer tools",
+    "tech stack",
+    "LLM"
+  ],
+  "primaryColor": "#0A84FF",
+  "backgroundColor": "#FFFFFF"
 }
