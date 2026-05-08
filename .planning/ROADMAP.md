@@ -146,8 +146,10 @@ When WEB-01 through WEB-03 are complete (deployed, functional, parity verified),
 
 **Goal:** Finalize production-ready features: model comparison, sharing, comprehensive error handling, performance optimization, and app store submission preparation.
 
-**Mode:** mvp  
+**Mode:** mvp
 **Estimated Duration:** 5-7 days
+
+**Plans:** 4 plans
 
 ### Requirements (Remaining items)
 
@@ -191,6 +193,13 @@ When WEB-01 through WEB-03 are complete (deployed, functional, parity verified),
 
 ### Completion Definition
 When all requirements mapped to Phase 4 are complete and success criteria met, project is ready for \"v1.0 Launch Milestone.\"
+
+### Plans
+
+- [ ] 04-01-PLAN.md — Share functionality and error boundary integration (MOB-06, PERF-03)
+- [ ] 04-02-PLAN.md — Performance optimization: loading states, 60fps scrolling, bundle reduction (PERF-01, PERF-02, PERF-04)
+- [ ] 04-03-PLAN.md — App store submission prep: icons, metadata, EAS build config, privacy policy (STORE-01, STORE-03, STORE-04, STORE-05)
+- [ ] 04-04-PLAN.md — QA testing, Vercel deployment finalization, app store screenshots (WEB-05, QA-01 through QA-04, STORE-02)
 
 ---
 
