@@ -1,5 +1,6 @@
 import { Card, Text } from "react-native-paper";
 
+import ShareButton from "./ShareButton";
 import type { Model } from "../types/models";
 
 interface ModelCardProps {
@@ -26,6 +27,9 @@ export default function ModelCard({ model, highlight }: ModelCardProps) {
           </Text>
         </Card.Content>
       )}
+      <Card.Content>
+        <ShareButton model={model} />
+      </Card.Content>
     </Card>
   );
 }
