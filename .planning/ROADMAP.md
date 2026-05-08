@@ -49,26 +49,26 @@ When DATA-05 is complete (models.json published and accessible), proceed to Phas
 ### Requirements (18 total)
 
 #### Model Tracking (MODEL-01 to MODEL-07)
-- [ ] Display list of all models with metadata
-- [ ] Show free tier availability with limits
-- [ ] Display cost-per-token pricing
-- [ ] Show rate limits
-- [ ] Display freshness indicator
-- [ ] Sort by launch date
+- [x] Display list of all models with metadata
+- [x] Show free tier availability with limits
+- [x] Display cost-per-token pricing
+- [x] Show rate limits
+- [x] Display freshness indicator
+- [x] Sort by launch date
 
 #### Discovery & Search (DISC-01 to DISC-05)
-- [ ] Search models by name or provider
-- [ ] Filter by provider (multi-select)
-- [ ] Filter by capability
-- [ ] \"New Models\" section
-- [ ] \"Free Models\" spotlight
+- [x] Search models by name or provider
+- [x] Filter by provider (multi-select)
+- [x] Filter by capability
+- [x] "New Models" section
+- [x] "Free Models" spotlight
 
 #### Mobile App (MOB-01 to MOB-06)
-- [ ] Tab-based navigation (Discover, Browse, Compare, Profile)
-- [ ] Model cards with provider logo, name, pricing, tags
-- [ ] Pull-to-refresh gesture
-- [ ] Error state handling with Sentry
-- [ ] Background fetch every 15 minutes
+- [x] Tab-based navigation (Discover, Browse, Compare, Profile)
+- [x] Model cards with provider logo, name, pricing, tags
+- [x] Pull-to-refresh gesture
+- [x] Error state handling with Sentry
+- [x] Background fetch every 15 minutes
 - [ ] Share model details via OS share sheet
 
 ### Success Criteria
