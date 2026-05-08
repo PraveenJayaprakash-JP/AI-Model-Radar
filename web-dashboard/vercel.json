@@ -1,4 +1,35 @@
 {
-  "buildCommand": "echo 'Static site - no build required'",
-  "outputDirectory": "."
+  "version": 2,
+  "public": true,
+  "builds": [
+    {
+      "src": "ai-model-radar.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/ai-model-radar.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/ai-model-radar.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    }
+  ]
 }
