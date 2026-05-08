@@ -1,6 +1,80 @@
-{
-  "success": false,
-  "data": [],
-  "timestamp": 1778189727,
-  "error": null
-}
+[
+  {
+    "id": "openai-gpt-4",
+    "name": "GPT-4",
+    "provider": "OpenAI",
+    "free_tier": false,
+    "pricing": {
+      "input_cost_per_1k": 0.03,
+      "output_cost_per_1k": 0.06
+    },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1672531200000,
+    "context_window": 8192
+  },
+  {
+    "id": "openai-gpt-3.5-turbo",
+    "name": "GPT-3.5 Turbo",
+    "provider": "OpenAI",
+    "free_tier": true,
+    "pricing": {
+      "input_cost_per_1k": 0.0015,
+      "output_cost_per_1k": 0.002
+    },
+    "capabilities": ["text", "code"],
+    "launch_date": 1677628800000,
+    "context_window": 4096
+  },
+  {
+    "id": "anthropic-claude-3-opus",
+    "name": "Claude 3 Opus",
+    "provider": "Anthropic",
+    "free_tier": false,
+    "pricing": {
+      "input_cost_per_1k": 0.015,
+      "output_cost_per_1k": 0.075
+    },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1704067200000,
+    "context_window": 200000
+  },
+  {
+    "id": "anthropic-claude-3-sonnet",
+    "name": "Claude 3 Sonnet",
+    "provider": "Anthropic",
+    "free_tier": true,
+    "pricing": {
+      "input_cost_per_1k": 0.003,
+      "output_cost_per_1k": 0.015
+    },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1704067200000,
+    "context_window": 200000
+  },
+  {
+    "id": "google-gemini-pro",
+    "name": "Gemini Pro",
+    "provider": "Google",
+    "free_tier": true,
+    "pricing": {
+      "input_cost_per_1k": 0,
+      "output_cost_per_1k": 0
+    },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1701388800000,
+    "context_window": 32768
+  },
+  {
+    "id": "mistral-mistral-large",
+    "name": "Mistral Large",
+    "provider": "Mistral",
+    "free_tier": false,
+    "pricing": {
+      "input_cost_per_1k": 0.004,
+      "output_cost_per_1k": 0.012
+    },
+    "capabilities": ["text", "code"],
+    "launch_date": 1701388800000,
+    "context_window": 32768
+  }
+]
