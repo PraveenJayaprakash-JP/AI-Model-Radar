@@ -1,14 +1,19 @@
 import * as Sentry from "@sentry/react-native";
 
-// TODO: Update with production Sentry DSN before app store submission
-const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN || 'YOUR_DSN_HERE';
+const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;
 
-Sentry.init({
-  dsn: SENTRY_DSN,
-  tracesSampleRate: 1.0,
-  enabled: process.env.NODE_ENV !== "development",
-});
+if (SENTRY_DSN && SENTRY_DSN.startsWith("https://")) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    tracesSampleRate: 1.0,
+    enabled: process.env.NODE_ENV !== "development",
+  });
+}
 
 export const captureError = (error: Error) => {
-  Sentry.captureException(error);
+  if (SENTRY_DSN?.startsWith("https://")) {
+    Sentry.captureException(error);
+  } else {
+    console.warn("Sentry disabled - no valid DSN");
+  }
 };
