@@ -4,6 +4,7 @@ export interface Provider {
 }
 
 export interface Model {
+  id: string;
   name: string;
   provider: string; // Changed from Provider object to string to match scraped data
   launch_date?: number;
@@ -17,6 +18,7 @@ export interface Model {
     tokens_per_month?: number;
   };
   context_window?: number;
+  pricingUrl?: string;
 }
 
 export type ModelsResponse = {

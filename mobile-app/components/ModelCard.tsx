@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import type { Model } from "../types/models";
 import { useCompare, useFilters, useFavorites } from "../stores/useFilters";
 import { getTheme } from "../lib/theme";
+import ShareButton from "./ShareButton";
 
 interface ModelCardProps {
   model: Model;
@@ -182,6 +183,8 @@ export default function ModelCard({ model, highlight, onPress }: ModelCardProps)
           {isSelected ? "Remove" : canSelect ? "Compare" : "Full (3/3)"}
         </Text>
       </TouchableOpacity>
+
+      <ShareButton model={model} />
     </TouchableOpacity>
   );
 }
