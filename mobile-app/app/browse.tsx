@@ -28,7 +28,7 @@ export default function BrowseScreen() {
     });
   }, []);
 
-  const { data, error, isLoading, isFetching } = useQuery({
+  const { data, error, isLoading, isFetching, refetch } = useQuery({
     ...modelsQueryOptions,
     initialData,
   });
@@ -217,6 +217,8 @@ export default function BrowseScreen() {
         isLoading={isLoading}
         error={error?.message}
         onModelPress={setSelectedModel}
+        refreshing={isFetching}
+        onRefresh={() => refetch()}
       />
       <FilterModal 
         visible={filterModalVisible} 
