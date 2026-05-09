@@ -1,6 +1,102 @@
-{
-  "success": false,
-  "data": [],
-  "timestamp": 1778357111,
-  "error": null
-}
+[
+  {
+    "id": "openai-gpt-4o",
+    "name": "GPT-4o",
+    "provider": "OpenAI",
+    "free_tier": false,
+    "pricing": { "input_cost_per_1k": 0.005, "output_cost_per_1k": 0.015 },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1715731200000,
+    "context_window": 128000
+  },
+  {
+    "id": "openai-gpt-4o-mini",
+    "name": "GPT-4o Mini",
+    "provider": "OpenAI",
+    "free_tier": true,
+    "pricing": { "input_cost_per_1k": 0.00015, "output_cost_per_1k": 0.0006 },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1721088000000,
+    "context_window": 128000
+  },
+  {
+    "id": "anthropic-claude-3-5-sonnet",
+    "name": "Claude 3.5 Sonnet",
+    "provider": "Anthropic",
+    "free_tier": false,
+    "pricing": { "input_cost_per_1k": 0.003, "output_cost_per_1k": 0.015 },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1719360000000,
+    "context_window": 200000
+  },
+  {
+    "id": "anthropic-claude-3-haiku",
+    "name": "Claude 3 Haiku",
+    "provider": "Anthropic",
+    "free_tier": true,
+    "pricing": { "input_cost_per_1k": 0.00025, "output_cost_per_1k": 0.00125 },
+    "capabilities": ["text", "code"],
+    "launch_date": 1711497600000,
+    "context_window": 200000
+  },
+  {
+    "id": "google-gemini-1-5-pro",
+    "name": "Gemini 1.5 Pro",
+    "provider": "Google",
+    "free_tier": true,
+    "pricing": { "input_cost_per_1k": 0.00125, "output_cost_per_1k": 0.005 },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1714521600000,
+    "context_window": 2000000
+  },
+  {
+    "id": "google-gemini-1-5-flash",
+    "name": "Gemini 1.5 Flash",
+    "provider": "Google",
+    "free_tier": true,
+    "pricing": { "input_cost_per_1k": 0.000075, "output_cost_per_1k": 0.0003 },
+    "capabilities": ["text", "code", "vision"],
+    "launch_date": 1717027200000,
+    "context_window": 1000000
+  },
+  {
+    "id": "mistral-mistral-large",
+    "name": "Mistral Large",
+    "provider": "Mistral",
+    "free_tier": false,
+    "pricing": { "input_cost_per_1k": 0.002, "output_cost_per_1k": 0.006 },
+    "capabilities": ["text", "code"],
+    "launch_date": 1708992000000,
+    "context_window": 128000
+  },
+  {
+    "id": "meta-llama-3-70b",
+    "name": "Llama 3 70B",
+    "provider": "Meta",
+    "free_tier": true,
+    "pricing": { "input_cost_per_1k": 0.0009, "output_cost_per_1k": 0.0009 },
+    "capabilities": ["text", "code"],
+    "launch_date": 1713312000000,
+    "context_window": 8192
+  },
+  {
+    "id": "replicate-llama-3-8b",
+    "name": "Llama 3 8B",
+    "provider": "Replicate",
+    "free_tier": true,
+    "pricing": { "input_cost_per_1k": 0.00005, "output_cost_per_1k": 0.00025 },
+    "capabilities": ["text", "code"],
+    "launch_date": 1713312000000,
+    "context_window": 8192
+  },
+  {
+    "id": "together-mixtral-8x22b",
+    "name": "Mixtral 8x22B",
+    "provider": "Together.ai",
+    "free_tier": true,
+    "pricing": { "input_cost_per_1k": 0.0012, "output_cost_per_1k": 0.0012 },
+    "capabilities": ["text", "code"],
+    "launch_date": 1708387200000,
+    "context_window": 65536
+  }
+]
