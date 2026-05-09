@@ -12,6 +12,7 @@ import Browse from "./browse";
 import Compare from "./compare";
 import Profile from "./profile";
 import Favorites from "./favorites";
+import withErrorBoundary from "../components/withErrorBoundary";
 
 const Tab = createBottomTabNavigator();
 const queryClient = new QueryClient();
@@ -53,11 +54,11 @@ export default function Layout() {
               headerTintColor: currentTheme.text,
             }}
           >
-            <Tab.Screen name="discover" component={Discover} options={{ title: "Discover" }} />
-            <Tab.Screen name="browse" component={Browse} options={{ title: "Browse" }} />
-            <Tab.Screen name="favorites" component={Favorites} options={{ title: "Favorites" }} />
-            <Tab.Screen name="compare" component={Compare} options={{ title: "Compare" }} />
-            <Tab.Screen name="profile" component={Profile} options={{ title: "Settings" }} />
+            <Tab.Screen name="discover" component={withErrorBoundary(Discover)} options={{ title: "Discover" }} />
+            <Tab.Screen name="browse" component={withErrorBoundary(Browse)} options={{ title: "Browse" }} />
+            <Tab.Screen name="favorites" component={withErrorBoundary(Favorites)} options={{ title: "Favorites" }} />
+            <Tab.Screen name="compare" component={withErrorBoundary(Compare)} options={{ title: "Compare" }} />
+            <Tab.Screen name="profile" component={withErrorBoundary(Profile)} options={{ title: "Settings" }} />
           </Tab.Navigator>
         </NavigationContainer>
       </ErrorBoundary>

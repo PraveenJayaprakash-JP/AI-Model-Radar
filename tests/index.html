@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Model Radar - Local Test</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://web-dashboard-omega-cyan.vercel.app https://raw.githubusercontent.com 'unsafe-inline'">
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    // This page acts as a local proxy for testing
+    // It loads the live site content
+    async function loadLiveSite() {
+      try {
+        const response = await fetch('https://web-dashboard-omega-cyan.vercel.app/');
+        const html = await response.text();
+        document.getElementById('app').innerHTML = html;
+        
+        // Also load the data
+        const dataResp = await fetch('https://raw.githubusercontent.com/PraveenJayaprakash-JP/AI-Model-Radar/master/data/models.json');
+        window.modelData = await dataResp.json();
+        
+        console.log('Live site loaded, models:', window.modelData?.length || 0);
+      } catch(e) {
+        console.error('Error loading live site:', e);
+      }
+    }
+    loadLiveSite();
+  </script>
+</body>
+</html>

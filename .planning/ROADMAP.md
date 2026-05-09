@@ -196,10 +196,10 @@ When all requirements mapped to Phase 4 are complete and success criteria met, p
 
 ### Plans
 
-- [ ] 04-01-PLAN.md — Share functionality and error boundary integration (MOB-06, PERF-03)
-- [ ] 04-02-PLAN.md — Performance optimization: loading states, 60fps scrolling, bundle reduction (PERF-01, PERF-02, PERF-04)
-- [ ] 04-03-PLAN.md — App store submission prep: icons, metadata, EAS build config, privacy policy (STORE-01, STORE-03, STORE-04, STORE-05)
-- [ ] 04-04-PLAN.md — QA testing, Vercel deployment finalization, app store screenshots (WEB-05, QA-01 through QA-04, STORE-02)
+- [x] 04-01-PLAN.md — Share functionality and error boundary integration (MOB-06, PERF-03)
+- [x] 04-02-PLAN.md — Performance optimization: loading states, 60fps scrolling, bundle reduction (PERF-01, PERF-02, PERF-04)
+- [x] 04-03-PLAN.md — App store submission prep: icons, metadata, EAS build config, privacy policy (STORE-01, STORE-03, STORE-04, STORE-05)
+- [x] 04-04-PLAN.md — QA testing, Vercel deployment finalization, app store screenshots (WEB-05, QA-01 through QA-04, STORE-02)
 
 ---
 

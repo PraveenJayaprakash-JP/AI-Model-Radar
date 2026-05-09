@@ -4,19 +4,20 @@ import {
   TouchableOpacity, 
   ScrollView,
   Modal,
-  StyleSheet 
+  StyleSheet,
+  LayoutChangeEvent
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useFilters, SortOption } from "../stores/useFilters";
+import { useQuery } from "@tanstack/react-query";
+import { modelsQueryOptions } from "../queries/models";
 import { getTheme } from "../lib/theme";
+import { useState } from "react";
 
 interface FilterModalProps {
   visible: boolean;
   onClose: () => void;
 }
-
-const PROVIDERS = ["OpenAI", "Anthropic", "Google", "Mistral", "Meta", "Amazon", "Replicate", "Together.ai"];
-const CAPABILITIES = ["Vision", "Function Calling", "JSON Mode", "Streaming", "Fine-tuning", "Search"];
 
 export default function FilterModal({ visible, onClose }: FilterModalProps) {
   const { 
@@ -34,6 +35,11 @@ export default function FilterModal({ visible, onClose }: FilterModalProps) {
     clearFilters
   } = useFilters();
   const currentTheme = getTheme(isDarkMode);
+  const [sliderWidth, setSliderWidth] = useState(0);
+
+  const { data } = useQuery({ ...modelsQueryOptions });
+  const dynamicProviders = [...new Set((data || []).map(m => m.provider))].sort();
+  const dynamicCapabilities = [...new Set((data || []).flatMap(m => m.capabilities || []))].sort();
 
   const sortOptions: { value: SortOption; label: string }[] = [
     { value: "name", label: "A → Z" },
@@ -84,7 +90,7 @@ export default function FilterModal({ visible, onClose }: FilterModalProps) {
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: currentTheme.text }]}>Providers</Text>
               <View style={styles.chipContainer}>
-                {PROVIDERS.map((provider) => (
+                {dynamicProviders.map((provider) => (
                   <TouchableOpacity
                     key={provider}
                     style={[
@@ -117,9 +123,10 @@ export default function FilterModal({ visible, onClose }: FilterModalProps) {
               </View>
               <TouchableOpacity 
                 style={[styles.sliderTrack, { backgroundColor: currentTheme.border }]}
+                onLayout={(e: LayoutChangeEvent) => setSliderWidth(e.nativeEvent.layout.width)}
                 onPress={(e) => {
-                  const width = 300;
-                  const value = Math.min(1, Math.max(0, (e.nativeEvent.locationX) / width));
+                  if (sliderWidth <= 0) return;
+                  const value = Math.min(1, Math.max(0, e.nativeEvent.locationX / sliderWidth));
                   setMaxPrice(value);
                 }}
               >
@@ -142,7 +149,7 @@ export default function FilterModal({ visible, onClose }: FilterModalProps) {
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: currentTheme.text }]}>Capabilities</Text>
               <View style={styles.chipContainer}>
-                {CAPABILITIES.map((cap) => (
+                {dynamicCapabilities.map((cap) => (
                   <TouchableOpacity
                     key={cap}
                     style={[

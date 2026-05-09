@@ -29,7 +29,17 @@ export default function DetailModal({ model, visible, onClose }: DetailModalProp
   const isFavorited = favorites.some(m => m.id === model.id);
 
   const handleOpenDocs = () => {
-    // Open model documentation
+    const lower = model.provider.toLowerCase();
+    const urls: Record<string, string> = {
+      openai: "https://platform.openai.com/docs",
+      anthropic: "https://docs.anthropic.com",
+      google: "https://ai.google.dev/docs",
+      mistral: "https://docs.mistral.ai",
+      replicate: "https://replicate.com/docs",
+      together: "https://docs.together.ai",
+    };
+    const key = Object.keys(urls).find(k => lower.includes(k));
+    if (key) Linking.openURL(urls[key]);
   };
 
   const getProviderIcon = (provider: string) => {
@@ -75,9 +85,9 @@ export default function DetailModal({ model, visible, onClose }: DetailModalProp
                 {model.launch_date && (
                   <View style={styles.badge}>
                     <Ionicons name="calendar" size={14} color="#007AFF" />
-                    <Text style={styles.badgeText}>
-                      {new Date(model.launch_date).toLocaleDateString()}
-                    </Text>
+<Text style={styles.badgeText}>
+                    {new Date(model.launch_date * 1000).toLocaleDateString()}
+                  </Text>
                   </View>
                 )}
               </View>

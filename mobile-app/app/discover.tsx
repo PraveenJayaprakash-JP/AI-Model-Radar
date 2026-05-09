@@ -1,5 +1,6 @@
 import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import ModelList from "../components/ModelList";
+import ErrorBanner from "../components/ErrorBanner";
 import { useQuery } from "@tanstack/react-query";
 import { modelsQueryOptions } from "../queries/models";
 import type { Model } from "../types/models";
@@ -20,7 +21,7 @@ export default function DiscoverScreen() {
     });
   }, []);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     ...modelsQueryOptions,
     initialData,
   });
@@ -41,6 +42,10 @@ export default function DiscoverScreen() {
         <Text style={{ marginTop: 16, color: currentTheme.textSecondary, fontSize: 16 }}>Discovering models...</Text>
       </View>
     );
+  }
+
+  if (error && !data) {
+    return <ErrorBanner message={error} onRetry={() => refetch()} />;
   }
 
   return (

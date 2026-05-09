@@ -23,6 +23,8 @@ interface Filters {
   clearFilters: () => void;
 }
 
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
 export const useFilters = create<Filters>((set) => ({
   searchQuery: "",
   providers: [],
@@ -31,7 +33,10 @@ export const useFilters = create<Filters>((set) => ({
   sortBy: "name",
   maxPrice: 1,
   showFreeOnly: false,
-  setSearchQuery: (query) => set({ searchQuery: query }),
+  setSearchQuery: (query) => {
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => set({ searchQuery: query }), 200);
+  },
   toggleTheme: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
   setSortBy: (sort) => set({ sortBy: sort }),
   setProviders: (providers) => set({ providers }),

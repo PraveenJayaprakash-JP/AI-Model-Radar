@@ -1,26 +1,62 @@
-import { render } from "@testing-library/react-native";
+import { render, waitFor } from "@testing-library/react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import BrowseScreen from "../app/browse";
 
-// Mock dependencies
+jest.mock("@expo/vector-icons", () => {
+  const React = require("react");
+  const { Text } = require("react-native");
+  const MockIcon = (props: any) => React.createElement(Text, props, props.name || "icon");
+  return {
+    __esModule: true,
+    Ionicons: MockIcon,
+    AntDesign: MockIcon,
+    MaterialIcons: MockIcon,
+    FontAwesome: MockIcon,
+    Feather: MockIcon,
+    Entypo: MockIcon,
+    MaterialCommunityIcons: MockIcon,
+    FontAwesome5: MockIcon,
+  };
+});
+
 jest.mock("../stores/useFilters", () => ({
   useFilters: () => ({
     searchQuery: "",
     setSearchQuery: jest.fn(),
+    providers: [],
+    capabilities: [],
+    showFreeOnly: false,
+    maxPrice: 1,
   }),
 }));
 
-jest.mock("../components/ModelList", () => "ModelList");
+jest.mock("../components/ModelList", () => {
+  const React = require("react");
+  const { View, Text } = require("react-native");
+  return {
+    __esModule: true,
+    default: () => React.createElement(View, null, React.createElement(Text, null, "ModelList")),
+  };
+});
+
+jest.mock("../components/FilterModal", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  return { __esModule: true, default: () => React.createElement(View) };
+});
+
+jest.mock("../components/DetailModal", () => {
+  const React = require("react");
+  const { View } = require("react-native");
+  return { __esModule: true, default: () => React.createElement(View) };
+});
 
 jest.mock("../lib/storage", () => ({
-  loadCachedModels: jest.fn(() => []),
+  loadCachedModels: jest.fn(() => Promise.resolve(null)),
   saveModels: jest.fn(),
 }));
 
 jest.mock("../queries/models", () => ({
-  modelsQueryOptions: {
-    queryKey: ["models"],
-  },
+  modelsQueryOptions: { queryKey: ["models"] },
 }));
 
 jest.mock("@tanstack/react-query", () => ({
@@ -33,36 +69,25 @@ jest.mock("@tanstack/react-query", () => ({
   })),
 }));
 
+import BrowseScreen from "../app/browse";
+
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
-      queries: {
-        retry: false,
-      },
+      queries: { retry: false },
     },
   });
 
 describe("BrowseScreen", () => {
-  it("renders without crashing", () => {
-    const queryClient = createTestQueryClient();
-
-    expect(() =>
-      render(
-        <QueryClientProvider client={queryClient}>
-          <BrowseScreen />
-        </QueryClientProvider>
-      )
-    ).not.toThrow();
-  });
-
-  it("renders SearchBar", () => {
+  it("renders SearchBar", async () => {
     const queryClient = createTestQueryClient();
     const { getByPlaceholderText } = render(
       <QueryClientProvider client={queryClient}>
         <BrowseScreen />
       </QueryClientProvider>
     );
-
-    expect(getByPlaceholderText("Search models...")).toBeTruthy();
+    await waitFor(() => {
+      expect(getByPlaceholderText("Search AI models...")).toBeTruthy();
+    });
   });
 });

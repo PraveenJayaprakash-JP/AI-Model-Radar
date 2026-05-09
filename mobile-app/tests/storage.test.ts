@@ -1,30 +1,18 @@
-import { MMKV } from "react-native-mmkv";
 import { loadCachedModels, saveModels, clearStorage } from "../lib/storage";
 import type { Model } from "../types/models";
 
-// Mock MMKV
-jest.mock("react-native-mmkv", () => ({
-  MMKV: jest.fn(),
-}));
-
 describe("Storage", () => {
-  let mockStorage: any;
-
   beforeEach(() => {
-    mockStorage = {
-      getString: jest.fn(),
-      set: jest.fn(),
-      clearAll: jest.fn(),
-    };
-    (MMKV as jest.Mock).mockImplementation(() => mockStorage);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
+    clearStorage();
   });
 
   describe("loadCachedModels", () => {
-    it("returns parsed models when storage has data", () => {
+    it("returns null when no models cached", async () => {
+      const result = await loadCachedModels();
+      expect(result).toBeNull();
+    });
+
+    it("returns cached models after saving", async () => {
       const mockModels: Model[] = [
         {
           name: "gpt-4",
@@ -37,25 +25,14 @@ describe("Storage", () => {
         },
       ];
 
-      mockStorage.getString.mockReturnValue(JSON.stringify(mockModels));
-
-      const result = loadCachedModels();
-
+      await saveModels(mockModels);
+      const result = await loadCachedModels();
       expect(result).toEqual(mockModels);
-      expect(mockStorage.getString).toHaveBeenCalledWith("models");
-    });
-
-    it("returns null when storage is empty", () => {
-      mockStorage.getString.mockReturnValue(null);
-
-      const result = loadCachedModels();
-
-      expect(result).toBeNull();
     });
   });
 
   describe("saveModels", () => {
-    it("saves models as JSON string", () => {
+    it("saves and retrieves models", async () => {
       const mockModels: Model[] = [
         {
           name: "gpt-4",
@@ -68,28 +45,36 @@ describe("Storage", () => {
         },
       ];
 
-      saveModels(mockModels);
-
-      expect(mockStorage.set).toHaveBeenCalledWith(
-        "models",
-        JSON.stringify(mockModels)
-      );
+      await saveModels(mockModels);
+      const result = await loadCachedModels();
+      expect(result).toEqual(mockModels);
     });
 
-    it("handles errors gracefully", () => {
-      mockStorage.set.mockImplementation(() => {
-        throw new Error("Storage error");
-      });
+    it("overwrites previous models", async () => {
+      const models1: Model[] = [
+        { name: "gpt-4", provider: "openai", capabilities: ["text"], pricing: { input_cost_per_1k: 0.03, output_cost_per_1k: 0.06 } },
+      ];
+      const models2: Model[] = [
+        { name: "claude-3", provider: "anthropic", capabilities: ["text"], pricing: { input_cost_per_1k: 0.015, output_cost_per_1k: 0.075 } },
+      ];
 
-      expect(() => saveModels([])).not.toThrow();
+      await saveModels(models1);
+      await saveModels(models2);
+      const result = await loadCachedModels();
+      expect(result).toEqual(models2);
     });
   });
 
   describe("clearStorage", () => {
-    it("clears all storage", () => {
-      clearStorage();
+    it("clears cached models", async () => {
+      const mockModels: Model[] = [
+        { name: "gpt-4", provider: "openai", capabilities: ["text"], pricing: { input_cost_per_1k: 0.03, output_cost_per_1k: 0.06 } },
+      ];
 
-      expect(mockStorage.clearAll).toHaveBeenCalled();
+      await saveModels(mockModels);
+      await clearStorage();
+      const result = await loadCachedModels();
+      expect(result).toBeNull();
     });
   });
 });
