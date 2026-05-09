@@ -44,17 +44,16 @@
       --color-text-muted: #64748b;
       --color-border: #e2e8f0;
       --color-primary: #8b5cf6;
+      --color-dark-mode: light;
     }
     
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --color-bg: #0f172a;
-        --color-surface: #1e293b;
-        --color-text: #f8fafc;
-        --color-text-muted: #94a3b8;
-        --color-border: #334155;
-        --color-primary: #a78bfa;
-      }
+    [data-theme="dark"] {
+      --color-bg: #0f172a;
+      --color-surface: #1e293b;
+      --color-text: #f8fafc;
+      --color-text-muted: #94a3b8;
+      --color-border: #334155;
+      --color-primary: #a78bfa;
     }
     
     body {
@@ -92,6 +91,11 @@
     ::-webkit-scrollbar-thumb:hover {
       background: var(--color-text-muted);
     }
+    
+    .favorite-active {
+      color: #ef4444 !important;
+      fill: #ef4444;
+    }
   </style>
 </head>
 <body class="min-h-screen">
@@ -121,8 +125,27 @@
           </div>
         </div>
         
+        <!-- Navigation Tabs -->
+        <div class="hidden md:flex items-center gap-1">
+          <button data-tab="browse" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-primary-600 text-white">Browse</button>
+          <button data-tab="discover" class="px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]">Discover</button>
+          <button data-tab="compare" class="px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]">Compare</button>
+          <button data-tab="profile" class="px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]">Profile</button>
+        </div>
+
         <!-- Actions -->
         <div class="flex items-center gap-2">
+          <button id="darkModeBtn" class="p-2 rounded-lg hover:bg-[var(--color-surface)] text-[var(--color-text-muted)]" title="Toggle dark mode">
+            <svg id="darkModeIcon" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+          </button>
+          <button id="favoritesBtn" class="p-2 rounded-lg hover:bg-[var(--color-surface)] text-[var(--color-text-muted)] relative" title="Favorites">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            <span id="favoritesBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+          </button>
           <button id="refreshBtn" class="p-2 rounded-lg hover:bg-[var(--color-surface)] text-[var(--color-text-muted)]" title="Refresh data">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -147,13 +170,138 @@
       </div>
     </section>
 
+    <!-- Discover Section (hidden by default) -->
+    <section id="discoverSection" class="hidden mb-12">
+      <h2 class="text-2xl font-bold mb-6">Discover Models</h2>
+      
+      <!-- Featured Cards (clickable) -->
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+        <div data-action="recommend" data-capability="text" class="card rounded-xl p-6 cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-purple-500">
+          <div class="text-sm text-[var(--color-text-muted)] mb-2">Best for</div>
+          <div class="font-semibold text-lg">Text Generation</div>
+          <div class="text-sm text-green-600 mt-2">✓ Free available</div>
+        </div>
+        <div data-action="recommend" data-capability="code" class="card rounded-xl p-6 cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-blue-500">
+          <div class="text-sm text-[var(--color-text-muted)] mb-2">Best for</div>
+          <div class="font-semibold text-lg">Code Generation</div>
+          <div class="text-sm text-green-600 mt-2">✓ Free available</div>
+        </div>
+        <div data-action="recommend" data-capability="vision" class="card rounded-xl p-6 cursor-pointer hover:shadow-lg transition-shadow border-l-4 border-green-500">
+          <div class="text-sm text-[var(--color-text-muted)] mb-2">Best for</div>
+          <div class="font-semibold text-lg">Vision/Images</div>
+          <div class="text-sm text-green-600 mt-2">✓ Free available</div>
+        </div>
+      </div>
+      
+      <!-- New This Month -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+          New This Month
+        </h3>
+        <div id="newModels" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </div>
+      
+      <!-- Free to Try -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+          Free to Try
+        </h3>
+        <div id="freeModels" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </div>
+      
+      <!-- Top Recommended -->
+      <div>
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+          Top Recommended
+        </h3>
+        <div id="recommendedModels" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </div>
+    </section>
+
+    <!-- Compare Section (hidden by default) -->
+    <section id="compareSection" class="hidden mb-12">
+      <h2 class="text-2xl font-bold mb-6">Compare Models</h2>
+      <div id="compareEmptyState" class="text-center py-12">
+        <svg class="w-16 h-16 mx-auto text-[var(--color-text-muted)] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        <p class="text-[var(--color-text-muted)] mb-4">Select models to compare using the checkbox on each card</p>
+        <button id="browseModelsBtn" class="px-4 py-2 bg-primary-600 text-white rounded-lg">Browse Models</button>
+      </div>
+      <div id="compareContent" class="hidden">
+        <!-- Compare table rendered here -->
+      </div>
+    </section>
+
+    <!-- Profile Section (hidden by default) -->
+    <section id="profileSection" class="hidden mb-12">
+      <h2 class="text-2xl font-bold mb-6">Profile Settings</h2>
+      <div class="card rounded-xl p-6 max-w-2xl">
+        <div class="space-y-6">
+          <div>
+            <h3 class="font-semibold mb-2">Appearance</h3>
+            <button id="darkModeBtn2" class="flex items-center gap-3 px-4 py-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)]">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+              </svg>
+              <span>Dark Mode</span>
+              <span id="darkModeStatus" class="ml-auto text-sm text-[var(--color-text-muted)]">Off</span>
+            </button>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2">Network</h3>
+            <div class="flex items-center gap-4">
+              <button id="offlineToggle" class="flex items-center gap-3 px-4 py-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] text-sm">
+                Enable Offline Mode
+              </button>
+              <span id="offlineStatus" class="text-sm text-[var(--color-text-muted)]">Off</span>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2">Data</h3>
+            <div class="flex items-center gap-4">
+              <button id="clearCacheBtn" class="px-4 py-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] text-sm">
+                Clear Cached Data
+              </button>
+              <button id="exportFavoritesBtn" class="px-4 py-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] text-sm">
+                Export Favorites
+              </button>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-2">About</h3>
+            <p class="text-sm text-[var(--color-text-muted)]">AI Model Radar v1.0</p>
+            <p class="text-sm text-[var(--color-text-muted)]">Data refreshes every 15 minutes</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Filters -->
     <section class="mb-8">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-[var(--color-text-muted)]">Sort:</span>
+          <select id="sortSelect" class="px-3 py-1.5 rounded-lg text-sm border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]">
+            <option value="launch_date">Newest First</option>
+            <option value="name">Name (A-Z)</option>
+            <option value="price_low">Price (Low to High)</option>
+            <option value="price_high">Price (High to Low)</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
           <span class="text-sm font-medium text-[var(--color-text-muted)]">Providers:</span>
           <div id="providerFilters" class="flex flex-wrap gap-2">
             <!-- Dynamic provider chips -->
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium text-[var(--color-text-muted)]">Capabilities:</span>
+          <div id="capabilityFilters" class="flex flex-wrap gap-2">
+            <!-- Dynamic capability chips -->
           </div>
         </div>
       </div>
@@ -212,26 +360,56 @@
     // ============ State ============
     let allModels = [];
     let selectedProviders = new Set();
+    let selectedCapabilities = new Set();
+    let activeTab = 'browse';
+    let currentSort = 'launch_date';
+    
+    // Favorites state
+    let favorites = JSON.parse(localStorage.getItem('aiModelRadar_favorites') || '[]');
+    let compareList = JSON.parse(localStorage.getItem('aiModelRadar_compare') || '[]');
+    let manualOffline = false;
 
     // ============ Initialization ============
     document.addEventListener("DOMContentLoaded", async () => {
       initOfflineDetection();
       initSearch();
       initRefresh();
+      initFavorites();
+      initCompare();
+      initTabs();
+      initDarkMode();
+      initSort();
+      initProfile();
+      initModelCardEvents();
+      updateFavoritesBadge();
+      refreshFavoritesList();
       await loadModels();
     });
 
     // ============ Offline Detection ============
-    function initOfflineDetection() {
-      window.addEventListener("online", () => {
-        document.getElementById("offlineBanner").classList.add("hidden");
-      });
-      window.addEventListener("offline", () => {
-        document.getElementById("offlineBanner").classList.remove("hidden");
-      });
-      if (!navigator.onLine) {
-        document.getElementById("offlineBanner").classList.remove("hidden");
+    function updateOfflineBanner() {
+      const banner = document.getElementById("offlineBanner");
+      if (manualOffline || !navigator.onLine) {
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
       }
+    }
+
+    function toggleManualOffline() {
+      manualOffline = !manualOffline;
+      updateOfflineBanner();
+      const btn = document.getElementById('offlineToggle');
+      if (btn) btn.textContent = manualOffline ? 'Disable Offline Mode' : 'Enable Offline Mode';
+      const status = document.getElementById('offlineStatus');
+      if (status) status.textContent = manualOffline ? 'On' : 'Off';
+      loadModels();
+    }
+
+    function initOfflineDetection() {
+      window.addEventListener("online", updateOfflineBanner);
+      window.addEventListener("offline", updateOfflineBanner);
+      updateOfflineBanner();
     }
 
     // ============ Search ============
@@ -258,6 +436,12 @@
       showLoading(true);
       showError(false);
       
+      if (manualOffline) {
+        await tryLoadCached();
+        showLoading(false);
+        return;
+      }
+      
       try {
         const response = await fetch(DATA_URL);
         if (!response.ok) throw new Error("Failed to fetch");
@@ -268,15 +452,19 @@
         renderAll();
       } catch (error) {
         console.error("Fetch error:", error);
-        const cached = loadCachedData();
-        if (cached) {
-          allModels = cached;
-          renderAll();
-        } else {
-          showError(true);
-        }
+        await tryLoadCached();
       } finally {
         showLoading(false);
+      }
+    }
+
+    async function tryLoadCached() {
+      const cached = loadCachedData();
+      if (cached) {
+        allModels = cached;
+        renderAll();
+      } else {
+        showError(true);
       }
     }
 
@@ -309,8 +497,146 @@
     // ============ Rendering ============
     function renderAll() {
       renderProviderFilters();
+      renderCapabilityFilters();
       filterAndRenderModels(document.getElementById("search").value);
       renderRecommendations();
+    }
+
+    // ============ Dark Mode ============
+    function initDarkMode() {
+      const savedTheme = localStorage.getItem('aiModelRadar_theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      
+      const darkModeBtn = document.getElementById('darkModeBtn');
+      if (darkModeBtn) {
+        darkModeBtn.addEventListener('click', toggleDarkMode);
+      }
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('aiModelRadar_theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('aiModelRadar_theme', 'dark');
+      }
+      const status = document.getElementById('darkModeStatus');
+      if (status) status.textContent = isDark ? 'Off' : 'On';
+    }
+
+    // ============ Sort ============
+    function initSort() {
+      const sortSelect = document.getElementById('sortSelect');
+      if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+          currentSort = e.target.value;
+          filterAndRenderModels(document.getElementById("search").value);
+        });
+      }
+    }
+
+    // ============ Profile ============
+    function initProfile() {
+      const darkModeBtn2 = document.getElementById('darkModeBtn2');
+      if (darkModeBtn2) {
+        darkModeBtn2.addEventListener('click', toggleDarkMode);
+      }
+      
+      const offlineToggle = document.getElementById('offlineToggle');
+      if (offlineToggle) {
+        offlineToggle.addEventListener('click', toggleManualOffline);
+      }
+      
+      const clearCacheBtn = document.getElementById('clearCacheBtn');
+      if (clearCacheBtn) {
+        clearCacheBtn.addEventListener('click', () => {
+          localStorage.removeItem(CACHE_KEY);
+          localStorage.removeItem(TIMESTAMP_KEY);
+          alert('Cache cleared. Data will be reloaded on next refresh.');
+          loadModels();
+        });
+      }
+      
+      const exportFavoritesBtn = document.getElementById('exportFavoritesBtn');
+      if (exportFavoritesBtn) {
+        exportFavoritesBtn.addEventListener('click', () => {
+          const favModels = allModels.filter(m => favorites.includes(m.id));
+          const dataStr = JSON.stringify(favModels, null, 2);
+          const blob = new Blob([dataStr], {type: 'application/json'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'ai-model-radar-favorites.json';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+    }
+
+    // ============ Model Card Event Delegation ============
+    function initModelCardEvents() {
+      const closeModalBtn = document.querySelector('[data-action="close-modal"]');
+      if (closeModalBtn) closeModalBtn.addEventListener('click', closeModelDetail);
+
+      document.getElementById('modelDetailModal').addEventListener('click', (e) => {
+        if (e.target.id === 'modelDetailModal') closeModelDetail();
+      });
+
+      document.addEventListener('click', (e) => {
+        const recommend = e.target.closest('[data-action="recommend"]');
+        if (recommend) {
+          showTaskRecommendation(recommend.dataset.capability);
+          return;
+        }
+
+        const removeFav = e.target.closest('[data-action="remove-favorite"]');
+        if (removeFav) {
+          toggleFavorite(removeFav.dataset.modelId);
+          return;
+        }
+
+        const modalFav = e.target.closest('[data-action="modal-favorite"]');
+        if (modalFav) {
+          toggleFavorite(modalFav.dataset.modelId);
+          showModelDetail(modalFav.dataset.modelId);
+          return;
+        }
+
+        const modalShare = e.target.closest('[data-action="modal-share"]');
+        if (modalShare) {
+          shareModel(modalShare.dataset.modelId);
+          return;
+        }
+
+        const favoriteBtn = e.target.closest('[data-action="favorite"]');
+        if (favoriteBtn) {
+          const article = favoriteBtn.closest('[data-model-id]');
+          if (article) {
+            toggleFavorite(article.dataset.modelId);
+          }
+          return;
+        }
+
+        const article = e.target.closest('[data-model-id]');
+        if (!article) return;
+        
+        const modelId = article.dataset.modelId;
+        showModelDetail(modelId);
+      });
+
+      document.addEventListener('change', (e) => {
+        const checkbox = e.target.closest('[data-action="compare-checkbox"]');
+        if (checkbox) {
+          const article = checkbox.closest('[data-model-id]');
+          if (article) {
+            toggleCompare(article.dataset.modelId);
+          }
+        }
+      });
     }
 
     function renderProviderFilters() {
@@ -338,7 +664,39 @@
             selectedProviders.add(provider);
           }
           filterAndRenderModels(document.getElementById("search").value);
-          renderProviderFilters(); // Re-render to update active state
+          renderProviderFilters();
+        });
+      });
+    }
+
+    function renderCapabilityFilters() {
+      const capabilities = [...new Set(allModels.flatMap(m => m.capabilities || []).filter(Boolean))];
+      const container = document.getElementById("capabilityFilters");
+      
+      if (!container) return;
+      
+      container.innerHTML = capabilities.map(cap => `
+        <button 
+          data-capability="${cap}"
+          class="px-3 py-1.5 rounded-full text-sm font-medium transition-all
+            ${selectedCapabilities.has(cap) 
+              ? 'bg-primary-600 text-white' 
+              : 'bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-border)]'}"
+        >
+          ${cap}
+        </button>
+      `).join("");
+      
+      container.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const cap = btn.dataset.capability;
+          if (selectedCapabilities.has(cap)) {
+            selectedCapabilities.delete(cap);
+          } else {
+            selectedCapabilities.add(cap);
+          }
+          filterAndRenderModels(document.getElementById("search").value);
+          renderCapabilityFilters();
         });
       });
     }
@@ -360,8 +718,26 @@
         filtered = filtered.filter(m => selectedProviders.has(m.provider));
       }
       
-      // Sort by launch date (newest first)
-      filtered.sort((a, b) => (b.launch_date || 0) - (a.launch_date || 0));
+      // Filter by capabilities
+      if (selectedCapabilities.size > 0) {
+        filtered = filtered.filter(m => m.capabilities?.some(cap => selectedCapabilities.has(cap)));
+      }
+      
+      // Sort
+      switch (currentSort) {
+        case 'name':
+          filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+          break;
+        case 'price_low':
+          filtered.sort((a, b) => (a.pricing?.input_cost_per_1k || 0) - (b.pricing?.input_cost_per_1k || 0));
+          break;
+        case 'price_high':
+          filtered.sort((a, b) => (b.pricing?.input_cost_per_1k || 0) - (a.pricing?.input_cost_per_1k || 0));
+          break;
+        case 'launch_date':
+        default:
+          filtered.sort((a, b) => (b.launch_date || 0) - (a.launch_date || 0));
+      }
       
       // Render
       const container = document.getElementById("modelsGrid");
@@ -379,13 +755,32 @@
       container.innerHTML = filtered.map(model => renderModelCard(model)).join("");
     }
 
-    function renderModelCard(model) {
+    function renderModelCard(model, showCompare = true) {
       const pricing = model.pricing || {};
       const isFree = model.free_tier;
+      const favActive = isFavorite(model.id) ? 'favorite-active' : '';
+      const compareChecked = isInCompare(model.id) ? 'checked' : '';
+      const canCompare = compareList.length >= 5 && !compareChecked ? 'disabled' : '';
       
       return `
-        <article class="card rounded-xl p-6 hover:shadow-lg transition-shadow">
-          <div class="flex items-start justify-between mb-4">
+        <article class="card rounded-xl p-6 hover:shadow-lg transition-shadow relative cursor-pointer" data-model-id="${model.id}">
+          <!-- Compare Checkbox -->
+          ${showCompare ? `
+            <label class="absolute top-4 right-4 flex items-center gap-2 cursor-pointer ${canCompare}" title="${canCompare ? 'Max 5 models' : 'Select to compare'}" data-action="compare">
+              <input type="checkbox" ${compareChecked} ${canCompare} data-action="compare-checkbox"
+                class="w-4 h-4 rounded border-[var(--color-border)] text-primary-600 focus:ring-primary-500">
+              <span class="text-xs text-[var(--color-text-muted)]">Compare</span>
+            </label>
+          ` : ''}
+          
+          <!-- Favorite Button -->
+          <button data-action="favorite" class="absolute top-4 left-4 ${favActive}" title="${favActive ? 'Remove from favorites' : 'Add to favorites'}">
+            <svg class="w-6 h-6" fill="${favActive ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+          </button>
+          
+          <div class="flex items-start justify-between mb-4 mt-8">
             <div>
               <h3 class="font-semibold text-lg">${model.name || 'Unknown'}</h3>
               <span class="text-sm text-[var(--color-text-muted)]">${model.provider || 'Unknown'}</span>
@@ -415,6 +810,104 @@
           ` : ''}
         </article>
       `;
+    }
+
+    function showModelDetail(modelId) {
+      const model = allModels.find(m => m.id === modelId);
+      if (!model) return;
+      
+      const pricing = model.pricing || {};
+      const modal = document.getElementById('modelDetailModal');
+      const content = document.getElementById('modelDetailContent');
+      
+      content.innerHTML = `
+        <div class="space-y-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 class="text-2xl font-bold">${model.name}</h3>
+              <p class="text-[var(--color-text-muted)]">${model.provider}</p>
+            </div>
+            ${model.free_tier ? '<span class="px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full">FREE</span>' : ''}
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="card p-4 rounded-lg">
+              <div class="text-sm text-[var(--color-text-muted)]">Input Price</div>
+              <div class="text-xl font-semibold">$${pricing.input_cost_per_1k || '--'}/1K</div>
+            </div>
+            <div class="card p-4 rounded-lg">
+              <div class="text-sm text-[var(--color-text-muted)]">Output Price</div>
+              <div class="text-xl font-semibold">$${pricing.output_cost_per_1k || '--'}/1K</div>
+            </div>
+            <div class="card p-4 rounded-lg">
+              <div class="text-sm text-[var(--color-text-muted)]">Context Length</div>
+              <div class="text-xl font-semibold">${model.context_length ? model.context_length.toLocaleString() : '--'} tokens</div>
+            </div>
+            <div class="card p-4 rounded-lg">
+              <div class="text-sm text-[var(--color-text-muted)]">Rate Limit</div>
+              <div class="text-xl font-semibold">${model.rate_limit || '--'}</div>
+            </div>
+          </div>
+          
+          ${model.capabilities?.length ? `
+            <div>
+              <div class="text-sm text-[var(--color-text-muted)] mb-2">Capabilities</div>
+              <div class="flex flex-wrap gap-2">
+                ${model.capabilities.map(cap => `
+                  <span class="px-3 py-1 bg-[var(--color-surface)] text-sm rounded-full">${cap}</span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          <div class="flex gap-3">
+            <button data-action="modal-favorite" data-model-id="${model.id}" class="flex-1 px-4 py-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface)] flex items-center justify-center gap-2">
+              <svg class="w-5 h-5 ${isFavorite(model.id) ? 'favorite-active' : ''}" fill="${isFavorite(model.id) ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              ${isFavorite(model.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+            </button>
+            <button data-action="modal-share" data-model-id="${model.id}" class="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+              </svg>
+              Share
+            </button>
+          </div>
+        </div>
+      `;
+      
+      modal.classList.remove('hidden');
+    }
+
+    function closeModelDetail() {
+      document.getElementById('modelDetailModal').classList.add('hidden');
+    }
+
+    function shareModel(modelId) {
+      const model = allModels.find(m => m.id === modelId);
+      if (!model) return;
+      
+      const shareData = {
+        title: `${model.name} - AI Model Radar`,
+        text: `Check out ${model.name} by ${model.provider} on AI Model Radar`,
+        url: window.location.href
+      };
+      
+      if (navigator.share) {
+        navigator.share(shareData).catch(() => {});
+      } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(`${model.name} by ${model.provider} - ${window.location.href}`);
+        alert('Link copied to clipboard!');
+      }
+    }
+
+    function showTaskRecommendation(capability) {
+      const model = allModels.find(m => m.free_tier && m.capabilities?.some(c => c.toLowerCase().includes(capability)));
+      if (model) {
+        showModelDetail(model.id);
+      }
     }
 
     function renderRecommendations() {
@@ -447,6 +940,259 @@
       }).join("");
     }
 
+    // ============ Favorites ============
+    function initFavorites() {
+      document.getElementById('favoritesBtn').addEventListener('click', openFavoritesDrawer);
+      document.getElementById('closeFavorites').addEventListener('click', closeFavoritesDrawer);
+      document.getElementById('favoritesOverlay').addEventListener('click', closeFavoritesDrawer);
+    }
+
+    function refreshFavoritesList() {
+      if (allModels.length > 0) {
+        renderFavoritesList();
+      }
+    }
+
+    function toggleFavorite(modelId) {
+      const index = favorites.indexOf(modelId);
+      if (index > -1) {
+        favorites.splice(index, 1);
+      } else {
+        favorites.push(modelId);
+      }
+      localStorage.setItem('aiModelRadar_favorites', JSON.stringify(favorites));
+      updateFavoritesBadge();
+      renderFavoritesList();
+      renderAll();
+    }
+
+    function isFavorite(modelId) {
+      return favorites.includes(modelId);
+    }
+
+    function updateFavoritesBadge() {
+      const badge = document.getElementById('favoritesBadge');
+      if (favorites.length > 0) {
+        badge.textContent = favorites.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function openFavoritesDrawer() {
+      document.getElementById('favoritesDrawer').classList.remove('translate-x-full');
+      document.getElementById('favoritesOverlay').classList.remove('hidden');
+    }
+
+    function closeFavoritesDrawer() {
+      document.getElementById('favoritesDrawer').classList.add('translate-x-full');
+      document.getElementById('favoritesOverlay').classList.add('hidden');
+    }
+
+    function renderFavoritesList() {
+      const container = document.getElementById('favoritesList');
+      const favModels = allModels.filter(m => favorites.includes(m.id));
+      
+      if (favModels.length === 0) {
+        container.innerHTML = '<p class="text-[var(--color-text-muted)] text-center py-8">No favorites yet</p>';
+        return;
+      }
+      
+      container.innerHTML = favModels.map(model => `
+        <div class="flex items-center justify-between p-3 bg-[var(--color-surface)] rounded-lg mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-medium text-sm truncate">${model.name}</div>
+            <div class="text-xs text-[var(--color-text-muted)]">${model.provider}</div>
+          </div>
+          <button data-action="remove-favorite" data-model-id="${model.id}" class="p-1 text-red-500 hover:bg-red-50 rounded">
+            <svg class="w-4 h-4" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function removeFavorite(modelId) {
+      favorites = favorites.filter(f => f !== modelId);
+      localStorage.setItem('aiModelRadar_favorites', JSON.stringify(favorites));
+      updateFavoritesBadge();
+      renderFavoritesList();
+      renderAll();
+    }
+
+    // ============ Compare ============
+    function initCompare() {
+      const browseBtn = document.getElementById('browseModelsBtn');
+      if (browseBtn) {
+        browseBtn.addEventListener('click', () => {
+          const browseTab = document.querySelector('[data-tab="browse"]');
+          if (browseTab) browseTab.click();
+        });
+      }
+      document.getElementById('compareBtn').addEventListener('click', openCompareModal);
+      document.getElementById('closeCompare').addEventListener('click', closeCompareModal);
+      document.getElementById('clearCompare').addEventListener('click', clearCompareList);
+      document.getElementById('compareModal').addEventListener('click', (e) => {
+        if (e.target.id === 'compareModal') closeCompareModal();
+      });
+    }
+
+    function toggleCompare(modelId) {
+      const index = compareList.indexOf(modelId);
+      if (index > -1) {
+        compareList.splice(index, 1);
+      } else if (compareList.length < 5) {
+        compareList.push(modelId);
+      }
+      localStorage.setItem('aiModelRadar_compare', JSON.stringify(compareList));
+      updateCompareBar();
+      renderAll();
+    }
+
+    function isInCompare(modelId) {
+      return compareList.includes(modelId);
+    }
+
+    function updateCompareBar() {
+      const bar = document.getElementById('compareBar');
+      const count = document.getElementById('compareCount');
+      if (compareList.length >= 2) {
+        count.textContent = `${compareList.length} selected`;
+        bar.classList.remove('hidden');
+      } else {
+        bar.classList.add('hidden');
+      }
+    }
+
+    function clearCompareList() {
+      compareList = [];
+      localStorage.setItem('aiModelRadar_compare', JSON.stringify(compareList));
+      updateCompareBar();
+      renderAll();
+    }
+
+    function openCompareModal() {
+      const modal = document.getElementById('compareModal');
+      const content = document.getElementById('compareContent');
+      const compareModels = allModels.filter(m => compareList.includes(m.id));
+      
+      const fields = [
+        { label: 'Provider', key: 'provider' },
+        { label: 'Input Price', key: 'pricing.input_cost_per_1k', format: v => v ? `$${v}/1K` : '-' },
+        { label: 'Output Price', key: 'pricing.output_cost_per_1k', format: v => v ? `$${v}/1K` : '-' },
+        { label: 'Context Length', key: 'context_length', format: v => v ? v.toLocaleString() : '-' },
+        { label: 'Free Tier', key: 'free_tier', format: v => v ? '✓ Yes' : '✗ No' },
+        { label: 'Capabilities', key: 'capabilities', format: v => v ? v.join(', ') : '-' },
+      ];
+      
+      let html = '<table class="w-full text-sm"><thead><tr>';
+      compareModels.forEach(m => {
+        html += `<th class="p-3 text-left font-semibold border-b border-[var(--color-border)]">${m.name}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+      
+      fields.forEach(field => {
+        html += '<tr>';
+        compareModels.forEach(m => {
+          let value = field.key.split('.').reduce((obj, k) => obj?.[k], m);
+          value = field.format ? field.format(value) : value || '-';
+          html += `<td class="p-3 border-b border-[var(--color-border)]">${value}</td>`;
+        });
+        html += '</tr>';
+      });
+      
+      html += '</tbody></table>';
+      content.innerHTML = html;
+      modal.classList.remove('hidden');
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compareModal').classList.add('hidden');
+    }
+
+    // ============ Tabs ============
+    function initTabs() {
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.dataset.tab;
+          activeTab = tab;
+          
+          document.querySelectorAll('[data-tab]').forEach(b => {
+            if (b.dataset.tab === tab) {
+              b.classList.add('bg-primary-600', 'text-white');
+              b.classList.remove('text-[var(--color-text-muted)]');
+            } else {
+              b.classList.remove('bg-primary-600', 'text-white');
+              b.classList.add('text-[var(--color-text-muted)]');
+            }
+          });
+          
+          const discoverSection = document.getElementById('discoverSection');
+          const compareSection = document.getElementById('compareSection');
+          const profileSection = document.getElementById('profileSection');
+          const recommendationsSection = document.querySelector('section:nth-of-type(2)');
+          const filtersSection = document.querySelector('section:nth-of-type(3)');
+          const modelsSection = document.querySelector('section:nth-of-type(4)');
+          
+          // Hide all sections first
+          discoverSection.classList.add('hidden');
+          compareSection.classList.add('hidden');
+          profileSection.classList.add('hidden');
+          recommendationsSection.classList.add('hidden');
+          filtersSection.classList.add('hidden');
+          modelsSection.classList.add('hidden');
+          
+          if (tab === 'discover') {
+            discoverSection.classList.remove('hidden');
+            renderDiscoverSection();
+          } else if (tab === 'compare') {
+            compareSection.classList.remove('hidden');
+            renderCompareSection();
+          } else if (tab === 'profile') {
+            profileSection.classList.remove('hidden');
+          } else {
+            // browse tab
+            recommendationsSection.classList.remove('hidden');
+            filtersSection.classList.remove('hidden');
+            modelsSection.classList.remove('hidden');
+          }
+        });
+      });
+    }
+
+    function renderCompareSection() {
+      const emptyState = document.getElementById('compareEmptyState');
+      const content = document.getElementById('compareContent');
+      
+      if (compareList.length < 2) {
+        emptyState.classList.remove('hidden');
+        content.classList.add('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        content.classList.remove('hidden');
+        openCompareModal();
+      }
+    }
+
+    function renderDiscoverSection() {
+      const now = Date.now();
+      const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000);
+      
+      const newModels = allModels
+        .filter(m => m.launch_date && m.launch_date * 1000 > thirtyDaysAgo)
+        .slice(0, 6);
+      
+      const freeModels = allModels.filter(m => m.free_tier).slice(0, 6);
+      
+      const recommendedModels = allModels.filter(m => m.capabilities?.length).slice(0, 6);
+      
+      document.getElementById('newModels').innerHTML = newModels.map(m => renderModelCard(m, false)).join('') || '<p class="text-[var(--color-text-muted)]">No new models</p>';
+      document.getElementById('freeModels').innerHTML = freeModels.map(m => renderModelCard(m, false)).join('') || '<p class="text-[var(--color-text-muted)]">No free models</p>';
+      document.getElementById('recommendedModels').innerHTML = recommendedModels.map(m => renderModelCard(m, false)).join('') || '<p class="text-[var(--color-text-muted)]">No recommendations</p>';
+    }
+
     // ============ UI Helpers ============
     function showLoading(show) {
       document.getElementById("loadingState").classList.toggle("hidden", !show);
@@ -458,5 +1204,70 @@
       document.getElementById("modelsGrid").classList.toggle("hidden", show);
     }
   </script>
+<!-- Compare Floating Button -->
+<div id="compareBar" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-primary-600 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-4 z-50 hidden">
+  <span id="compareCount" class="font-medium">0 selected</span>
+  <button id="compareBtn" class="px-4 py-1.5 bg-white text-primary-600 rounded-lg font-medium hover:bg-gray-100">
+    Compare
+  </button>
+  <button id="clearCompare" class="p-1 hover:bg-primary-700 rounded">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Favorites Drawer -->
+<div id="favoritesDrawer" class="fixed inset-y-0 right-0 w-80 bg-[var(--color-bg)] border-l border-[var(--color-border)] shadow-xl transform translate-x-full transition-transform z-50">
+  <div class="flex items-center justify-between p-4 border-b border-[var(--color-border)]">
+    <h3 class="text-lg font-bold">Favorites</h3>
+    <button id="closeFavorites" class="p-1 hover:bg-[var(--color-surface)] rounded">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+  <div id="favoritesList" class="p-4 overflow-y-auto h-[calc(100%-60px)]">
+    <p class="text-[var(--color-text-muted)] text-center py-8">No favorites yet</p>
+  </div>
+</div>
+
+<!-- Drawer Overlay -->
+<div id="favoritesOverlay" class="fixed inset-0 bg-black/50 hidden z-40"></div>
+
+<!-- Compare Modal -->
+<div id="compareModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+  <div class="bg-[var(--color-bg)] rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+    <div class="flex items-center justify-between p-4 border-b border-[var(--color-border)]">
+      <h3 class="text-lg font-bold">Compare Models</h3>
+      <button id="closeCompare" class="p-1 hover:bg-[var(--color-surface)] rounded">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="compareContent" class="p-4 overflow-auto max-h-[calc(90vh-60px)]">
+      <!-- Compare table rendered here -->
+    </div>
+  </div>
+</div>
+
+<!-- Model Detail Modal -->
+<div id="modelDetailModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+  <div class="bg-[var(--color-bg)] rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden" data-action="modal-inner">
+    <div class="flex items-center justify-between p-4 border-b border-[var(--color-border)]">
+      <h3 class="text-lg font-bold">Model Details</h3>
+      <button data-action="close-modal" class="p-1 hover:bg-[var(--color-surface)] rounded">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="modelDetailContent" class="p-6 overflow-auto max-h-[calc(90vh-60px)]">
+      <!-- Model details rendered here -->
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
