@@ -382,8 +382,8 @@
       initProfile();
       initModelCardEvents();
       updateFavoritesBadge();
-      refreshFavoritesList();
       await loadModels();
+      refreshFavoritesList();
     });
 
     // ============ Offline Detection ============
@@ -616,7 +616,23 @@
         if (favoriteBtn) {
           const article = favoriteBtn.closest('[data-model-id]');
           if (article) {
+            e.preventDefault();
+            e.stopPropagation();
             toggleFavorite(article.dataset.modelId);
+          }
+          return;
+        }
+
+        const compareLabel = e.target.closest('[data-action="compare"]');
+        if (compareLabel) {
+          const checkbox = compareLabel.querySelector('[data-action="compare-checkbox"]');
+          if (checkbox && !checkbox.disabled) {
+            e.preventDefault();
+            e.stopPropagation();
+            const article = compareLabel.closest('[data-model-id]');
+            if (article) {
+              toggleCompare(article.dataset.modelId);
+            }
           }
           return;
         }
